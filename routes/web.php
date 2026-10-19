@@ -1,17 +1,20 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\SubscriptionPackageController;
-use App\Models\SubscriptionPackage;
 use App\http\Controllers\BookController;
 
+// Route halaman utama (Home) yang menampilkan paket langganan dan buku
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/', function () {
-    $subscriptionPackages = SubscriptionPackage::all();
-    return view('home', compact('subscriptionPackages'));
-})->name('home');
+// Route untuk pencarian global navbar
+Route::get('/search', [HomeController::class, 'search'])->name('search');
+
+// Route untuk membuka halaman daftar buku berdasarkan kategori yang dipilih
+Route::get('/category/{id}', [HomeController::class, 'category'])->name('category.books');
 
 //kelompok route yang hanya bisa diakses oleh user yang sudah login
 Route::middleware(['isLoggedIn'])->group(function () {
