@@ -86,28 +86,34 @@
                 {{-- Looping data paket langganan terbaru --}}
                 @forelse ($subscriptionPackages as $subscriptionPackage)
                     <div class="col-md-4">
-                        {{-- Warna card paket dinamis sesuai dengan value pada field 'color' di database --}}
-                        <div class="card h-100"
-                            style="background: linear-gradient(135deg, {{ $subscriptionPackage->color }} 0%, #ffffff 100%)">
-                            <div class="card-body text-center text-dark d-flex flex-column justify-content-center align-items-center">
-                                {{-- Nama paket langganan --}}
-                                <h2 class="fw-bold">{{ $subscriptionPackage->name }}</h2>
-                                <p class="text-secondary fw-bold mb-1">PACKAGE</p>
-                                
-                                {{-- Deskripsi paket langganan jika ada --}}
-                                @if ($subscriptionPackage->description)
-                                    <p class="text-muted small mb-2">{{ $subscriptionPackage->description }}</p>
-                                @endif
+                        {{-- Card paket langganan dapat diklik menuju detail paket langganan --}}
+                        <a href="{{ route('subscription-package.detail', $subscriptionPackage->id) }}" class="text-decoration-none">
+                            <div class="card h-100 shadow-sm border-0"
+                                style="background: linear-gradient(135deg, {{ $subscriptionPackage->color }} 0%, #ffffff 100%); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;"
+                                onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.12)';"
+                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='';">
+                                <div class="card-body text-center text-dark d-flex flex-column justify-content-center align-items-center">
+                                    {{-- Nama paket langganan --}}
+                                    <h2 class="fw-bold">{{ $subscriptionPackage->name }}</h2>
+                                    <p class="text-secondary fw-bold mb-1">PACKAGE</p>
+                                    
+                                    {{-- Deskripsi paket langganan jika ada --}}
+                                    @if ($subscriptionPackage->description)
+                                        <p class="text-muted small mb-2">{{ $subscriptionPackage->description }}</p>
+                                    @endif
 
-                                {{-- Harga paket langganan dalam format rupiah --}}
-                                <div class="text-center mt-2">
-                                    <span class="fs-2 fw-bold text-warning"
-                                        style="color: #D4AF37 !important;">Rp {{ number_format($subscriptionPackage->price, 0, ',', '.') }}</span>
-                                    <br>
-                                    <span class="fw-bold text-secondary">/30 Hari</span>
+                                    {{-- Harga paket langganan dalam format rupiah --}}
+                                    <div class="text-center mt-2">
+                                        <span class="fs-2 fw-bold text-warning"
+                                            style="color: #D4AF37 !important;">Rp {{ number_format($subscriptionPackage->price, 0, ',', '.') }}</span>
+                                        <br>
+                                        <span class="fw-bold text-secondary">/30 Hari</span>
+                                    </div>
+
+                                   
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 @empty
                     <div class="col-12">

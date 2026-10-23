@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\SubscriptionPackageController;
 use App\http\Controllers\BookController;
+use App\Http\Controllers\SubscriptionPackageBookController;
 
 // Route halaman utama (Home) yang menampilkan paket langganan dan buku
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -15,6 +16,9 @@ Route::get('/search', [HomeController::class, 'search'])->name('search');
 
 // Route untuk membuka halaman daftar buku berdasarkan kategori yang dipilih
 Route::get('/category/{id}', [HomeController::class, 'category'])->name('category.books');
+
+// Route untuk membuka halaman detail paket langganan dan daftar buku yang tertaut (Tugas 6.2)
+Route::get('/subscription-package/{id}', [HomeController::class, 'subscriptionPackageDetail'])->name('subscription-package.detail');
 
 //kelompok route yang hanya bisa diakses oleh user yang sudah login
 Route::middleware(['isLoggedIn'])->group(function () {
@@ -27,9 +31,11 @@ Route::middleware(['isLoggedIn'])->group(function () {
         })->name('dashboard');
 
         Route::resource('book-categories', BookCategoryController::class);
-
-        Route::resource('subscription-package', SubscriptionPackageController::class);
         Route::resource('books', BookController::class);
+        Route::get('subscription-package/{id}/books', [SubscriptionPackageBookController::class, 'show'])->name('subscription-package.books');
+        Route::post('subscription-package/{id}/books', [SubscriptionPackageBookController::class, 'store'])->name('subscription-package.books.store');
+        Route::resource('subscription-package', SubscriptionPackageController::class);
+
     });
 });
 //kelompok route yang hanya bisa diakses oleh user yang belum login

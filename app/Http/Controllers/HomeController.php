@@ -18,7 +18,7 @@ class HomeController extends Controller
         // Data buku terbaru dan buku gratis untuk slider beranda
         $latestBooks = Book::orderBy('created_at', 'desc')->limit(10)->get();
         $freeBooks = Book::where('price', 0)->orderBy('created_at', 'desc')->limit(6)->get();
-        
+
         // Mengirimkan data ke view home.blade.php
         return view('home', compact('subscriptionPackages', 'latestBooks', 'freeBooks'));
     }
@@ -55,7 +55,7 @@ class HomeController extends Controller
             // Filter pencarian berdasarkan judul buku atau nama penulis jika ada input pencarian
             ->when($query, function ($q) use ($query) {
                 $q->where(function ($sub) use ($query) {
-                    $sub->where('title', 'like', '%' . $query . '%')
+                    $sub->where('title', 'like', '  ' . $query . '%')
                         ->orWhere('writer', 'like', '%' . $query . '%');
                 });
             })
@@ -79,5 +79,29 @@ class HomeController extends Controller
 
         // Mengirimkan variabel ke view category_books.blade.php
         return view('category_books', compact('category', 'books', 'query', 'sort'));
+    }
+
+    /**
+     * Menampilkan detail paket langganan dan daftar buku yang tertaut 
+     * Data diambil dari tabel subscription_package_books
+     */
+    public function subscriptionPackageDetail(Request $request, $id)
+    {
+        // Mengambil data paket langganan berdasarkan ID
+        $subscriptionPackage = SubscriptionPackage::findOrFail($id);
+
+        // Mengambil input query pencarian dari search bar pada paket ini
+        $query = $request->input('search');
+
+        // Mengambil daftar buku yang tertaut pada paket langganan dari tabel subscription_package_books
+        $books = $subscriptionPackage->books()
+            // Filter pencarian berdasarkan judul buku jika ada input search
+            ->when($query, function ($q) use ($query) {
+                $q->where('title', 'like', '%' . $query . '%');
+            })
+            ->with('bookCategory')
+            ->get();
+
+        return view('subscription_package_detail', compact('subscriptionPackage', 'books', 'query'));
     }
 }

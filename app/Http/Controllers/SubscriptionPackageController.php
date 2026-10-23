@@ -33,6 +33,7 @@ class SubscriptionPackageController extends Controller
                 ->addColumn('action', function ($data) {
                     $editUrl = route('admin.subscription-package.edit', $data->id);
                     $deleteUrl = route('admin.subscription-package.destroy', $data->id);
+                    $books = route('admin.subscription-package.books', $data->id);
                     $csrf = csrf_field();
                     $method = method_field('DELETE');
 
@@ -47,8 +48,10 @@ class SubscriptionPackageController extends Controller
                                         Hapus
                                     </button>
                                 </form>';
+                    $btnBooks = '<a href="' . $books . '"
+                                            class="btn btn-sm btn-info">Buku</a>';
 
-                    return $btnEdit . $btnDelete;
+                    return $btnEdit . $btnDelete . $btnBooks;
                 })
                 // menyimpan dari addColumn/editColumn yang ada html di dalamnya
                 ->rawColumns(['color', 'action'])

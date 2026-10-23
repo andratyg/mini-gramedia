@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[Fillable(['name', 'description', 'color', 'price'])]
 class SubscriptionPackage extends Model
@@ -16,5 +17,10 @@ class SubscriptionPackage extends Model
     public function subscriptionPackageUsers(): HasMany
     {
         return $this->hasMany(SubscriptionPackageUser::class);
+    }
+
+    public function books(): BelongsToMany
+    {
+        return $this->belongsToMany(Book::class, 'subscription_package_books');
     }
 }
