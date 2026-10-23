@@ -76,9 +76,10 @@
                             </span>
                             <span class="text-muted small fw-semibold">/ 30 Hari</span>
                         </div>
-                        <button type="button" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm">
+                        <a href="{{ route('subscription-package.checkout.page', $subscriptionPackage->id) }}"
+                            class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm">
                             <i class="fa-solid fa-crown me-1"></i> Langganan Sekarang
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>

@@ -102,6 +102,6 @@ class HomeController extends Controller
             ->with('bookCategory')
             ->get();
 
-        return view('subscription_package_detail', compact('subscriptionPackage', 'books', 'query'));
+        return view('user.subscription-packages.show', compact('subscriptionPackage', 'books', 'query'));
     }
 }

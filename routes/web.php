@@ -23,6 +23,9 @@ Route::get('/subscription-package/{id}', [HomeController::class, 'subscriptionPa
 //kelompok route yang hanya bisa diakses oleh user yang sudah login
 Route::middleware(['isLoggedIn'])->group(function () {
     Route::get('/logout', [UserController::class, 'logout'])->name('logout');
+    Route::get('subscription-package/{id}/checkout', [SubscriptionPackageController::class, 'checkoutPage'])->name('subscription-package.checkout.page');
+    Route::post('subscription-package/{id}/checkout', [SubscriptionPackageController::class, 'checkout'])->name('subscription-package.checkout');
+    Route::get('/profile', [UserController::class, 'profile'])->name('profile.show');
     //prefix untuk mengelompokkan route admin yang path nya diawali dengan /admin
     //seluruh route pada kelompok ini akan memiliki nama route diawali dengan admin. contoh : admin.dashboard
     Route::prefix('admin')->name('admin.')->middleware('isAdmin')->group(function () {

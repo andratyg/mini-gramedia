@@ -86,6 +86,12 @@
         </div>
 
         <div class="navbar-nav flex-row order-md-last ms-auto gap-2">
+            {{--Profile--}}
+                <div class="mt-3 ms-2">
+                    <a href="{{ route('profile.show') }}" class="text-decoration-none">
+                        <i class="fa-solid fa-user fs-3 text-dark"></i>
+                    </a>
+                </div>
             @if (Auth::check())
                 <a href="{{ route('logout') }}" class="btn btn-danger">Logout</a>
             @else
