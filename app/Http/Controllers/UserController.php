@@ -3,32 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Checkout;
+use app\Models\SubscriptionPackageUser;
+use 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 
+
+
 class UserController extends Controller
 {
     public function register(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => ['required', 'min:3'],
-            'email' => ['required', 'email:rfc,dns', 'unique:users,email'],
-            'password' => ['required', 'min:8', 'max:10', 'confirmed', Password::min(8)->max(10)->uncompromised()],
-        ],
-        [
-            'name.required' => 'Nama Lengkap harus diisi',
-            'name.min' => 'Nama minimal 3 karakter',
-            'email.required' => 'Email harus diisi',
-            'email.email' => 'Email tidak valid',
-            'email.unique' => 'Email Harus disi dengan data yang belum terdaftar',
-            'password.required' => 'Password harus diisi',
-            'password.min' => 'Password minimal 8 karakter',
-            'password.max' => 'Password maksimal 10 karakter',
-            'password.confirmed' => 'Konfirmasi Password tidak sesuai dengan password yang diberikkan',
+        $validatedData = $request->validate(
+            [
+                'name' => ['required', 'min:3'],
+                'email' => ['required', 'email:rfc,dns', 'unique:users,email'],
+                'password' => ['required', 'min:8', 'max:10', 'confirmed', Password::min(8)->max(10)->uncompromised()],
+            ],
+            [
+                'name.required' => 'Nama Lengkap harus diisi',
+                'name.min' => 'Nama minimal 3 karakter',
+                'email.required' => 'Email harus diisi',
+                'email.email' => 'Email tidak valid',
+                'email.unique' => 'Email Harus disi dengan data yang belum terdaftar',
+                'password.required' => 'Password harus diisi',
+                'password.min' => 'Password minimal 8 karakter',
+                'password.max' => 'Password maksimal 10 karakter',
+                'password.confirmed' => 'Konfirmasi Password tidak sesuai dengan password yang diberikkan',
 
-        ]);
+            ]
+        );
 
         //simpan data ke database
         $createAccount = User::create([
@@ -44,14 +51,16 @@ class UserController extends Controller
     }
     public function login(Request $request)
     {
-        $validatedData = $request->validate([
-            'email' => ['required'],
-            'password' => ['required'],
-        ],
-        [
-            'email.required' => 'Email harus diisi',
-            'password.required' => 'Password harus diisi',
-        ]);
+        $validatedData = $request->validate(
+            [
+                'email' => ['required'],
+                'password' => ['required'],
+            ],
+            [
+                'email.required' => 'Email harus diisi',
+                'password.required' => 'Password harus diisi',
+            ]
+        );
         // //untuk proses auth ambil data selain token (email dan password saja)
         // $auth = $request->except('_token');
         // // 1. cek pasangan email-pw bener atau salah
@@ -85,23 +94,56 @@ class UserController extends Controller
             }
 
             return redirect()->route('home')->with('success', 'Berhasil login');
-
         } else {
             return redirect()->route('login')->with('error', 'Email atau Password salah. Coba lagi!')->withInput();
         }
-
     }
     public function profile()
     {
         $user = Auth::user();
-        return view('user.profile.show', compact('user'));
+
+        // Mengambil paket langganan aktif pengguna (expired_date >= hari ini)
+        $activeSubscription = $user->subscriptionPackageUsers()
+            ->with(['subscriptionPackage.books.bookCategory'])
+            ->whereDate('expired_date', '>=', now())
+            ->latest()
+            ->first();
+
+        // Riwayat seluruh langganan (subscription_package_users sesuai id pengguna)
+        $allSubscriptions = $user->subscriptionPackageUsers()
+            ->with(['subscriptionPackage.books.bookCategory'])
+            ->latest()
+            ->get();
+
+        // Riwayat transaksi checkout
+        $checkouts = Checkout::where('user_id', $user->id)
+            ->with(['checkoutBooks.book.bookCategory'])
+            ->latest()
+            ->get();
+
+        // Koleksi buku dari seluruh paket langganan yang dimiliki user
+        $subscriptionBooks = $allSubscriptions->flatMap(function ($sub) {
+            return ($sub->subscriptionPackage && $sub->subscriptionPackage->books)
+                ? $sub->subscriptionPackage->books
+                : collect();
+        });
+
+        // Koleksi buku dari pembelian buku (checkout)
+        $purchasedBooks = $checkouts->flatMap(function ($checkout) {
+            return $checkout->checkoutBooks->pluck('book');
+        })->filter();
+
+        // Gabungkan buku yang dimiliki/dapat diakses user
+        $myBooks = $subscriptionBooks->merge($purchasedBooks)->unique('id');
+
+        return view('user.profile.show', compact('user', 'activeSubscription', 'allSubscriptions', 'checkouts', 'myBooks'));
     }
     public function logout(request $request)
     {
         Auth::logout();
         //memastikan semua sesiaon yang ada dibuat invalid/expired
         $request->session()->invalidate();
-          //bikin ulang token sesion baru
+        //bikin ulang token sesion baru
         $request->session()->regenerateToken();
         return redirect()->route('home')->with('success', 'Berhasil logout');
     }
