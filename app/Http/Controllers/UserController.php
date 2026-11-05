@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Checkout;
-use app\Models\SubscriptionPackageUser;
-use 
+use App\Models\SubscriptionPackageUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;

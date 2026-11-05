@@ -4,9 +4,10 @@
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Daftar Paket Langganan</h2>
-            <a href="{{ route('admin.subscription-package.create') }}"
-                class="justify-content-end ms-auto btn btn-primary">Tambah
-                Paket Langganan</a>
+            <div class="d-flex gap-2">
+                <a href="{{ route('admin.subscription-package.export') }}" class="btn btn-success">Export Excel</a>
+                <a href="{{ route('admin.subscription-package.create') }}" class="btn btn-primary">Tambah Paket Langganan</a>
+            </div>
         </div>
         @if (session('success'))
             <div class="alert alert-success">

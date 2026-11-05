@@ -4,7 +4,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\SubscriptionPackage;
+use App\Exports\SubscriptionPackagesExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\subscriptionPackageUser;
 
@@ -23,7 +26,7 @@ class SubscriptionPackageController extends Controller
                 // fungsinya yaitu menambahkan nomor urut dari 1-2-dst
                 ->addIndexColumn()
                 // memformat tampilan harga menjadi format Rupiah
-                ->editColumn('price', function ($data) { 
+                ->editColumn('price', function ($data) {
                     return 'Rp. ' . number_format($data->price, 0, ',', '.');
                 })
                 // menampilkan warna dalam bentuk badge
@@ -142,13 +145,18 @@ class SubscriptionPackageController extends Controller
     public function checkout(Request $request, $id)
     {
         $subscriptionPackage = SubscriptionPackage::findOrFail($id);
-        
+
         subscriptionPackageUser::create([
             'subscription_package_id' => $subscriptionPackage->id,
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'expired_date' => now()->addDays(30)->format('Y-m-d'),
-            
+
         ]);
         return redirect()->route('home')->with('success', ' Pembayaran Berhasil. Terima kasih telah berlangganan!');
+    }
+
+    public function export()
+    {
+        return Excel::download(new SubscriptionPackagesExport, 'data-paket-langganan.xlsx');
     }
 }
