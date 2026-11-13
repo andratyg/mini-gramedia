@@ -14,6 +14,12 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Route untuk pencarian global navbar
 Route::get('/search', [HomeController::class, 'search'])->name('search');
 
+// Route untuk detail buku user (dari gambar)
+Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
+
+// Route resource kelola buku tanpa method show (dari teks bawahnya)
+Route::resource('books', BookController::class)->except(['show']);
+
 // Route untuk membuka halaman daftar buku berdasarkan kategori yang dipilih
 Route::get('/category/{id}', [HomeController::class, 'category'])->name('category.books');
 
@@ -24,7 +30,7 @@ Route::get('/subscription-package/{id}', [HomeController::class, 'subscriptionPa
 Route::middleware(['isLoggedIn'])->group(function () {
     Route::get('/logout', [UserController::class, 'logout'])->name('logout');
     Route::get('subscription-package/{id}/checkout', [SubscriptionPackageController::class, 'checkoutPage'])->name('subscription-package.checkout.page');
-    Route::post('subscription-package/{id}/checkout', [SubscriptionPackageController::class, 'checkout'])->name('subscription-package.checkout');
+    Route::post('subscription-package/{id}/checkout', [SubscriptionPackageController::class, 'checkout'])->name('subscription-package.checkout');   
     Route::get('/profile', [UserController::class, 'profile'])->name('profile.show');
     Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
     //prefix untuk mengelompokkan route admin yang path nya diawali dengan /admin
@@ -34,8 +40,11 @@ Route::middleware(['isLoggedIn'])->group(function () {
             return view('admin.dashboard');
         })->name('dashboard');
 
+        Route::get('book-categories/export', [BookCategoryController::class, 'export'])->name('book-categories.export');
         Route::resource('book-categories', BookCategoryController::class);
+        Route::get('books/export', [BookController::class, 'export'])->name('books.export');
         Route::resource('books', BookController::class);
+        Route::get('subscription-package/export', [SubscriptionPackageController::class, 'export'])->name('subscription-package.export');
         Route::get('subscription-package/{id}/books', [SubscriptionPackageBookController::class, 'show'])->name('subscription-package.books');
         Route::post('subscription-package/{id}/books', [SubscriptionPackageBookController::class, 'store'])->name('subscription-package.books.store');
         Route::resource('subscription-package', SubscriptionPackageController::class);

@@ -141,7 +141,7 @@
                                 </div>
                                 <div>
                                     <h5><span style="font-size: 0.8rem;" class="text-secondary">{{ $book->writer ?? 'Unknown Author' }}</span>
-                                        <br><span style="font-size: 1rem">{{ $book->title ?? 'No Title' }}</span>
+                                        <br><a href="{{ route('books.show', $book->id) }}" style="font-size: 1rem">{{ $book->title ?? 'No Title' }}</a>
                                     </h5>
                                     <h4 style="font-size: 1.2rem; font-weight: bold;">Rp {{ number_format($book->price ?? 0, 0, ',', '.') }}</h4>
                                 </div>
