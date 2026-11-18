@@ -80,7 +80,9 @@
 
                 {{-- Keranjang --}}
                 <div class="mt-3 ms-2">
-                    <i class="fa-solid fa-cart-arrow-down fs-3 text-dark"></i>
+                    <a href="{{ route('carts') }}" class="text-dark fs-3 text-decoration-none" title="Keranjang">
+                        <i class="fa-solid fa-cart-shopping" style="color: #1e293b;"></i>
+                    </a>
                 </div>
             @endif
         </div>

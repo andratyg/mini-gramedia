@@ -19,6 +19,8 @@
 @endpush
 
 @section('content')
+<form action="{{ route('cart.store')}}" method="POST">
+    @csrf
 <div class="page-body">
     <div class="container-xl pb-5 bg-white p-3">
         <div class="row g-4">
@@ -166,16 +168,18 @@
 
             <!-- Tombol Transaksi -->
             <div class="d-flex gap-2">
-                <button type="button" class="btn btn-outline-primary px-4 py-2 font-weight-medium">
+                <input type="hidden" name="book_id" value="{{ $book->id }}">
+                <button type="submit" name="action" value="add_to_cart" class="btn btn-outline-primary px-4 py-2 font-weight-medium">
                     Tambah ke Keranjang
                 </button>
-                <button type="button" class="btn btn-primary px-4 py-2 font-weight-medium">
+                <button type="submit" name="action" value="buy_now" class="btn btn-primary px-4 py-2 font-weight-medium">
                     Beli Sekarang
                 </button>
             </div>
         </div>
     </div>
 </div>
+</form>
 @endsection
 
 @push('scripts')

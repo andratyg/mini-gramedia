@@ -7,6 +7,7 @@ use App\Http\Controllers\BookCategoryController;
 use App\Http\Controllers\SubscriptionPackageController;
 use App\http\Controllers\BookController;
 use App\Http\Controllers\SubscriptionPackageBookController;
+use App\Http\Controllers\CartController;
 
 // Route halaman utama (Home) yang menampilkan paket langganan dan buku
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -33,6 +34,11 @@ Route::middleware(['isLoggedIn'])->group(function () {
     Route::post('subscription-package/{id}/checkout', [SubscriptionPackageController::class, 'checkout'])->name('subscription-package.checkout');   
     Route::get('/profile', [UserController::class, 'profile'])->name('profile.show');
     Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
+
+    // Kelompok route untuk keranjang belanja (cart) yang hanya bisa diakses oleh pengguna yang sudah login
+    Route::get('/cart', [CartController::class, 'index'])->name('carts');
+    Route::post('/cart/add', [CartController::class, 'store'])->name('cart.store');
+    Route::delete('/cart/remove/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
     //prefix untuk mengelompokkan route admin yang path nya diawali dengan /admin
     //seluruh route pada kelompok ini akan memiliki nama route diawali dengan admin. contoh : admin.dashboard
     Route::prefix('admin')->name('admin.')->middleware('isAdmin')->group(function () {

@@ -141,7 +141,7 @@
                                 </div>
                                 <div>
                                     <h5><span style="font-size: 0.8rem;" class="text-secondary">{{ $book->writer ?? 'Unknown Author' }}</span>
-                                        <br><a href="{{ route('books.show', $book->id) }}" style="font-size: 1rem">{{ $book->title ?? 'No Title' }}</a>
+                                        <br><a href="{{ route('books.show', $book->id) }}" class="stretched-link text-decoration-none text-dark" style="font-size: 1rem">{{ $book->title ?? 'No Title' }}</a>
                                     </h5>
                                     <h4 style="font-size: 1.2rem; font-weight: bold;">Rp {{ number_format($book->price ?? 0, 0, ',', '.') }}</h4>
                                 </div>
@@ -163,12 +163,10 @@
             <div class="row">
                 @forelse ($freeBooks as $book)
                     <div class="col-4">
-                        <div class="card d-flex flex-column">
+                        <div class="card d-flex flex-column h-100 position-relative" style="cursor: pointer;">
                             <div class="row row-0 flex-fill">
                                 <div class="col-md-3">
-                                    <a href="#">
-                                        <img src="{{ asset($book->cover)}}" alt="card-side-image" class="w-100 h-100 object-cover">
-                                    </a>
+                                    <img src="{{ asset($book->cover)}}" alt="card-side-image" class="w-100 h-100 object-cover">
                                 </div>
                                 <div class="col">
                                     <div class="card-body h-full d-flex flex-column">
@@ -177,7 +175,7 @@
                                         </h3>
                                         <div class="text-secondary">
                                             <span style="font-size: 0.8rem;">{{ $book->writer }}</span>
-                                            <br><span class="text-dark fw-bold" style="font-size: 0.95rem;">{{ $book->title }}</span>
+                                            <br><a href="{{ route('books.show', $book->id) }}" class="stretched-link text-dark fw-bold text-decoration-none" style="font-size: 0.95rem;">{{ $book->title }}</a>
                                         </div>
                                         <div class="d-flex align-items-center pt-4 mt-auto">
                                             <h3>
